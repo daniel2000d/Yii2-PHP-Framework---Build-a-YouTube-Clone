@@ -30,18 +30,25 @@ AppAsset::register($this);
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
+
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
     ];
-    if (Yii::$app->user->isGuest) {
+    if (Yii::$app->cache->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    }     
+    } else{
+        $menuItems[]=[
+                'label'=>'Logout ('.Yii::$app->user->identity->username. ')',
+                'url'=>['/site/logout'],
+                'linkOptions'=> [
+                        'data-method'=>'post'
+                ]
+
+        ];
+    }
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
+        'options' => ['class' => 'navbar-nav ml-auto'],
         'items' => $menuItems,
     ]);
     if (Yii::$app->user->isGuest) {
@@ -60,11 +67,9 @@ AppAsset::register($this);
 
 <main role="main" class="flex-shrink-0">
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
         <?= Alert::widget() ?>
-        <?= $content ?>
+
+
     </div>
 </main>
 
